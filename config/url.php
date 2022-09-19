@@ -2,9 +2,12 @@
 return array(
     "authorize" => "main/authorize",
     "users" => "main/users",
-    "friend" => "main/friend",
+    "friends" => "main/friend",
     "register" => "main/register",
     "feedpost" => "main/feedpost",
     "profileinfo" => "main/profileinfo",
-    "myposts" => "main/myposts"
+    "myposts" => "main/myposts",
+    "createpost" => "main/createpost",
+    "userprofile" => "main/userprofile",
+    "messages" => "main/messages",
 );

@@ -140,10 +140,68 @@ class mainController
             $profileM = new ProfileModel();
             $user = $this->checkToken($_POST['token']);
             if ($user) {
-                $myPosts = $profileM->getMyposts($user['id']);
+                if (isset($_POST['user_id'])) {
+                    $myPosts = $profileM->getMyposts($_POST['user_id']);
+                } else {
+                    $myPosts = $profileM->getMyposts($user['id']);
+                }
+
 
                 print_r(json_encode($myPosts));
             }
+        }
+    }
+    function createpostAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['post_text'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $myPosts = $profileM->createPost($user['id'], $_POST['post_text']);
+
+                print_r(json_encode($myPosts));
+            }
+        }
+    }
+    function userprofileAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['user_id'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $userprofile = $profileM->getUser($_POST['user_id']);
+
+                print_r(json_encode($userprofile));
+            }
+        }
+    }
+    function friendAction()
+    {
+        if (isset($_POST['token'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            $friends = $profileM->getUserFriends($user["id"]);
+            $current_friend = [];
+            foreach ($friends as $friend) {
+                if ($friend['first_user'] == $user['id']) {
+                    $userprofile = $profileM->getUser($friend['twelf_user']);
+                    array_push($current_friend, $userprofile);
+                } else {
+                    $userprofile = $profileM->getUser($friend['first_user']);
+                    array_push($current_friend, $userprofile);
+                }
+            }
+
+            print_r(json_encode($current_friend));
+        }
+    }
+    function messagesAction()
+    {
+        $profileM = new ProfileModel();
+        $user = $this->checkToken($_POST['token']);
+        if ($user) {
+            $mesGroup = $profileM->getMessagesGroup($user['id']);
+            print_r(json_encode($mesGroup));
         }
     }
 }
