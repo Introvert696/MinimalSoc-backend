@@ -55,6 +55,7 @@ class ProfileModel
         }
     }
 
+
     function getProfile($token)
     {
 
@@ -125,6 +126,54 @@ class ProfileModel
         $dbcon = require 'Db/connDb.php';
         if ($dbcon != null) {
             $sth = $conn->prepare("Select mgr_id,title,concat((select name from users where message_group.first_user = users.id),' ',(select lastname from users where message_group.first_user = users.id)) as first_user,concat((select name from users where message_group.twelf_user = users.id),' ',(select lastname from users where message_group.twelf_user = users.id)) as twelf_user,create_at from message_group where ((first_user='$id')||(twelf_user='$id'))");
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
+    function getMessagesFromGroup($mesGroupId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Select message_id,user_from,user_to,send_at,concat((select name from users where message.user_from = users.id),' ',(select lastname from users where message.user_from = users.id)) as from_fio, concat((select name from users where message.user_to = users.id),' ',(select lastname from users where message.user_to = users.id)) as to_fio,content from message where message_group=" . $mesGroupId);
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
+    function getOneMesGroup($mesGroupId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Select * from message_group where mgr_id =" . $mesGroupId);
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
+    function createMessage($user_from, $user_to, $message_group, $content)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Insert into message(user_from,user_to,message_group,content) VALUES ('$user_from','$user_to','$message_group','$content')");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
+    function getFeedPost()
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Select * from message_group where mgr_id =" . $mesGroupId);
             $sth->execute();
             $result = $sth->fetchAll(PDO::FETCH_ASSOC);
             return $result;

@@ -68,6 +68,7 @@ class mainController
         $profileM = new ProfileModel();
         $result = $profileM->getSafeUsers();
         print_r(json_encode($result));
+        exit();
     }
     function authorizeAction()
     {
@@ -76,9 +77,11 @@ class mainController
             $resultAuth = $this->checkLogPas($_POST['login'], $_POST['password']);
             if ($resultAuth) {
                 print_r(json_encode($resultAuth));
+                exit();
             }
         } else {
             print_r(json_encode("NOT FOUND"));
+            exit();
             //
         }
     }
@@ -97,12 +100,15 @@ class mainController
                 $regResult = $profileM->register($login, $password, $name, $lastname, $date, $token, $sool);
                 print_r(json_encode($regResult));
                 http_response_code(202);
+                exit();
             } catch (\Throwable $th) {
                 print_r($th);
+                exit();
             }
         } else {
             http_response_code(501);
             print_r("Bad request");
+            exit();
         }
     }
     function feedpostAction()
@@ -131,7 +137,7 @@ class mainController
                 foreach ($myPosts as $p) {
                     array_push($postarr, $p);
                 }
-                asort($postarr);
+
                 print_r(json_encode($postarr));
             }
         }
@@ -172,6 +178,7 @@ class mainController
                 $myPosts = $profileM->createPost($user['id'], $_POST['post_text']);
 
                 print_r(json_encode($myPosts));
+                exit();
             }
         }
     }
@@ -184,6 +191,10 @@ class mainController
                 $userprofile = $profileM->getUser($_POST['user_id']);
 
                 print_r(json_encode($userprofile));
+                exit();
+            } else {
+                http_response_code(403);
+                exit();
             }
         }
     }
@@ -212,15 +223,72 @@ class mainController
             $user = $this->checkToken($_POST['token']);
             $current_friend = $this->getFriend($user['id']);
             print_r(json_encode($current_friend));
+        } else {
+            http_response_code(403);
+            exit();
         }
     }
     function messagesAction()
     {
-        $profileM = new ProfileModel();
-        $user = $this->checkToken($_POST['token']);
-        if ($user) {
-            $mesGroup = $profileM->getMessagesGroup($user['id']);
-            print_r(json_encode($mesGroup));
+        if (isset($_POST['token'])) {
+            if (isset($_POST['selected_mail_group'])) {
+                $profileM = new ProfileModel();
+                $user = $this->checkToken($_POST['token']);
+                if ($user) {
+                    $messages = $profileM->getMessagesFromGroup($_POST['selected_mail_group']);
+                    $current_message = [];
+                    foreach ($messages as $m) {
+                        if (($m['user_from'] == $user['id']) || ($m['user_to'] == $user['id'])) {
+                            array_push($current_message, $m);
+                        }
+                    }
+                    if (empty($current_message)) {
+                        http_response_code(403);
+                        exit();
+                    }
+                    print_r(json_encode($current_message));
+                }
+            } else {
+                $profileM = new ProfileModel();
+                $user = $this->checkToken($_POST['token']);
+                if ($user) {
+                    $mesGroup = $profileM->getMessagesGroup($user['id']);
+                    print_r(json_encode($mesGroup));
+                } else {
+                    http_response_code(403);
+                    exit();
+                }
+            }
         }
+    }
+    function sendmessageAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['selected_mail_group']) && isset($_POST['content'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $message_group = $profileM->getOneMesGroup($_POST['selected_mail_group'])[0];
+
+                if (($message_group['first_user'] == $user['id']) || ($message_group['twelf_user'] == $user['id'])) {
+                    $to_user = 0;
+                    if ($message_group['first_user'] == $user['id']) {
+                        $to_user = $message_group['twelf_user'];
+                    } else {
+                        $to_user = $message_group['first_user'];
+                    }
+                    $message = $profileM->createMessage($user['id'], $to_user, $message_group["mgr_id"], $_POST['content']);
+                    print_r(json_encode($message));
+                    http_response_code(202);
+
+                    exit();
+                } else {
+                    http_response_code(501);
+                    exit();
+                }
+            }
+        }
+    }
+    function createdialogAction()
+    {
     }
 }

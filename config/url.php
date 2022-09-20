@@ -10,4 +10,6 @@ return array(
     "createpost" => "main/createpost",
     "userprofile" => "main/userprofile",
     "messages" => "main/messages",
+    "sendmessage" => "main/sendmessage",
+    "createdialog" => "main/createdialog",
 );
