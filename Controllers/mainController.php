@@ -117,10 +117,22 @@ class mainController
         if (isset($_POST['token'])) {
             $profileM = new ProfileModel();
             $user = $this->checkToken($_POST['token']);
-            if ($user) {
-                $myPosts = $profileM->getPosts($user['id']);
 
-                print_r(json_encode($myPosts));
+            if ($user) {
+                $current_friend = $this->getFriend($user['id']);
+                $myPosts = $profileM->getPosts($user['id']);
+                $postarr = [];
+                foreach ($current_friend as $f) {
+                    $temp_post = $profileM->getPosts($f[0]['id']);
+                    foreach ($temp_post as $p) {
+                        array_push($postarr, $p);
+                    }
+                }
+                foreach ($myPosts as $p) {
+                    array_push($postarr, $p);
+                }
+                asort($postarr);
+                print_r(json_encode($postarr));
             }
         }
     }
@@ -175,23 +187,30 @@ class mainController
             }
         }
     }
+    //получение друзей
+    function getFriend($userId)
+    {
+        $profileM = new ProfileModel();
+        $friends = $profileM->getUserFriends($userId);
+        $current_friend = [];
+        foreach ($friends as $friend) {
+            if ($friend['first_user'] != $userId) {
+                $userprofileone = $profileM->getUser($friend['first_user']);
+                array_push($current_friend, $userprofileone);
+            }
+            if ($friend['twelf_user'] != $userId) {
+                $userprofiletwo = $profileM->getUser($friend['twelf_user']);
+                array_push($current_friend, $userprofiletwo);
+            }
+        }
+        return $current_friend;
+    }
     function friendAction()
     {
         if (isset($_POST['token'])) {
             $profileM = new ProfileModel();
             $user = $this->checkToken($_POST['token']);
-            $friends = $profileM->getUserFriends($user["id"]);
-            $current_friend = [];
-            foreach ($friends as $friend) {
-                if ($friend['first_user'] == $user['id']) {
-                    $userprofile = $profileM->getUser($friend['twelf_user']);
-                    array_push($current_friend, $userprofile);
-                } else {
-                    $userprofile = $profileM->getUser($friend['first_user']);
-                    array_push($current_friend, $userprofile);
-                }
-            }
-
+            $current_friend = $this->getFriend($user['id']);
             print_r(json_encode($current_friend));
         }
     }
