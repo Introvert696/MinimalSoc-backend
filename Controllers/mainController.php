@@ -243,7 +243,7 @@ class mainController
                         }
                     }
                     if (empty($current_message)) {
-                        http_response_code(403);
+                        http_response_code(404);
                         exit();
                     }
                     print_r(json_encode($current_message));
@@ -283,12 +283,44 @@ class mainController
                     exit();
                 } else {
                     http_response_code(501);
-                    exit();
                 }
             }
         }
     }
     function createdialogAction()
     {
+        if (isset($_POST['token']) && isset($_POST['user_id'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                try {
+                    $message_group = $profileM->getMessagesGroup($_POST['user_id']);
+
+
+                    $createnew = false;
+                    if (empty($message_group)) {
+                        $createnew = true;
+                    } else {
+                        foreach ($message_group as $m) {
+
+                            if ((($m['first_id'] == $user['id']) && ($m['twelf_id'] == $_POST['user_id'])) || (($m['first_id'] == $_POST['user_id']) && ($m['twelf_id'] == $user['id']))) {
+                                print_r(json_encode($m));
+                                $createnew = false;
+                                break;
+                            } else {
+                                $createnew = true;
+                            }
+                        }
+                    }
+                    if ($createnew) {
+                        $creater_message_group = $profileM->createMessageGroup($user['id'], $_POST['user_id']);
+                        print_r(json_encode("created"));
+                    }
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    print_r(json_encode($th));
+                }
+            }
+        }
     }
 }

@@ -125,7 +125,7 @@ class ProfileModel
     {
         $dbcon = require 'Db/connDb.php';
         if ($dbcon != null) {
-            $sth = $conn->prepare("Select mgr_id,title,concat((select name from users where message_group.first_user = users.id),' ',(select lastname from users where message_group.first_user = users.id)) as first_user,concat((select name from users where message_group.twelf_user = users.id),' ',(select lastname from users where message_group.twelf_user = users.id)) as twelf_user,create_at from message_group where ((first_user='$id')||(twelf_user='$id'))");
+            $sth = $conn->prepare("Select mgr_id,title,first_user as first_id,twelf_user as twelf_id,concat((select name from users where message_group.first_user = users.id),' ',(select lastname from users where message_group.first_user = users.id)) as first_user,concat((select name from users where message_group.twelf_user = users.id),' ',(select lastname from users where message_group.twelf_user = users.id)) as twelf_user,create_at from message_group where ((first_user='$id')||(twelf_user='$id'))");
             $sth->execute();
             $result = $sth->fetchAll(PDO::FETCH_ASSOC);
             return $result;
@@ -157,6 +157,7 @@ class ProfileModel
             exit();
         }
     }
+
     function createMessage($user_from, $user_to, $message_group, $content)
     {
         $dbcon = require 'Db/connDb.php';
@@ -176,6 +177,18 @@ class ProfileModel
             $sth = $conn->prepare("Select * from message_group where mgr_id =" . $mesGroupId);
             $sth->execute();
             $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
+    function createMessageGroup($first_user, $twelf_user)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("INSERT INTO message_group(title,first_user,twelf_user) VALUES('NONE','$first_user','$twelf_user')");
+            $sth->execute();
+            $result = $sth->fetch();
             return $result;
         } else {
             exit();
