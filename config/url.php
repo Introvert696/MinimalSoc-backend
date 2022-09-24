@@ -12,4 +12,5 @@ return array(
     "messages" => "main/messages",
     "sendmessage" => "main/sendmessage",
     "createdialog" => "main/createdialog",
+    "search" => "main/search",
 );

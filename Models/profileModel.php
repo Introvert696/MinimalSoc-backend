@@ -194,4 +194,16 @@ class ProfileModel
             exit();
         }
     }
+    function getSearchResult($query_string)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("SELECT id,name,lastname,user_photo  from users WHERE (name LIKE '%" . $query_string . "%')OR(lastname LIKE '%" . $query_string . "%')");
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }

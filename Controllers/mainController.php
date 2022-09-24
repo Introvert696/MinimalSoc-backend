@@ -323,4 +323,15 @@ class mainController
             }
         }
     }
+    function searchAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['query_string'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $resultQuery = $profileM->getSearchResult($_POST['query_string']);
+                print_r(json_encode($resultQuery));
+            }
+        }
+    }
 }
