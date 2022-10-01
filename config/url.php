@@ -13,4 +13,6 @@ return array(
     "sendmessage" => "main/sendmessage",
     "createdialog" => "main/createdialog",
     "search" => "main/search",
+    "addfriend" => "main/addfriend",
+    "creategroup" => "main/creategroup"
 );

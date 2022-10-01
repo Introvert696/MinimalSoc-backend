@@ -206,4 +206,28 @@ class ProfileModel
             exit();
         }
     }
+    function getFriendPair($first_user, $second_user)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("SELECT * from friend where ((first_user = '$first_user') AND (twelf_user = '$second_user')) OR ((first_user = '$second_user') AND (twelf_user = '$first_user'))");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
+    function createFriendPair($first_user, $second_user)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("INSERT INTO friend(first_user,twelf_user,friend_status) VALUES('$first_user','$second_user',0)");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }

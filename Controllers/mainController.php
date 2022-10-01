@@ -334,4 +334,27 @@ class mainController
             }
         }
     }
+    function addfriendAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['friend_id'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $result_friend = $profileM->getFriendPair($user['id'], $_POST['friend_id']);
+                if (!empty($result_friend)) {
+                    print_r(json_encode($result_friend));
+                } else {
+                    //если связи нету, то создаем новую
+                    try {
+                        $result_create = $profileM->createFriendPair($user['id'], $_POST['friend_id']);
+                        print_r(json_encode($result_create));
+                    } catch (\Throwable $th) {
+                        print_r(json_encode("Error"));
+                    }
+                }
+
+                //получаем и проверям есть ли такая пара в таблице
+            }
+        }
+    }
 }
