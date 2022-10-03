@@ -14,5 +14,6 @@ return array(
     "createdialog" => "main/createdialog",
     "search" => "main/search",
     "addfriend" => "main/addfriend",
-    "creategroup" => "main/creategroup"
+    "creategroup" => "main/creategroup",
+    "" => ""
 );
