@@ -2,7 +2,7 @@
 return array(
     "server" => "localhost",
     "user" => "root",
-    "password" => "",
+    "password" => "password",
     "dbname" => "minimalsoc"
 
 );

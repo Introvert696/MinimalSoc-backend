@@ -230,4 +230,16 @@ class ProfileModel
             exit();
         }
     }
+    function getUserGroup($userId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Select (select gr_id from group_soc where subscribe_users_to_group.gr_id = group_soc.id)as gr_id,(select title from group_soc where subscribe_users_to_group.gr_id = group_soc.id)as groupname,(select gr_photo from group_soc where subscribe_users_to_group.gr_id = group_soc.id)as gr_photo,(select create_at from group_soc where subscribe_users_to_group.gr_id = group_soc.id)as create_at  from subscribe_users_to_group where user = '$userId'");
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }

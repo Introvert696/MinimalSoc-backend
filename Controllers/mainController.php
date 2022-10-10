@@ -93,7 +93,7 @@ class mainController
             $name = $_POST['name'];
             $lastname = $_POST['lastname'];
             $date = $_POST['date'];
-            $token = md5($date . $password);
+            $token = md5($date . $password . $login);
             $sool = $date;
             try {
                 $profileM = new ProfileModel();
@@ -354,6 +354,19 @@ class mainController
                 }
 
                 //получаем и проверям есть ли такая пара в таблице
+            }
+        }
+    }
+    function getusergroupAction()
+    {
+        if (isset($_POST['token'])) {
+
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+
+                $userGroup = $profileM->getUserGroup($user['id']);
+                print_r(json_encode($userGroup));
             }
         }
     }
