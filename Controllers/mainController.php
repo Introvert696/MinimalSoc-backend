@@ -360,13 +360,28 @@ class mainController
     function getusergroupAction()
     {
         if (isset($_POST['token'])) {
-
             $profileM = new ProfileModel();
             $user = $this->checkToken($_POST['token']);
             if ($user) {
-
                 $userGroup = $profileM->getUserGroup($user['id']);
                 print_r(json_encode($userGroup));
+            }
+        }
+    }
+    function getgroupAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['groupId'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $groupInfo = $profileM->getGroupInfo($_POST['groupId']);
+                if ($groupInfo != null) {
+                    print_r(json_encode($groupInfo));
+                } else {
+                    http_response_code(404);
+                    print_r(json_encode(404));
+                    exit();
+                }
             }
         }
     }

@@ -15,5 +15,6 @@ return array(
     "search" => "main/search",
     "addfriend" => "main/addfriend",
     "creategroup" => "main/creategroup",
-    "getusergroup" => "main/getusergroup"
+    "getusergroup" => "main/getusergroup",
+    "getgroup" => "main/getgroup"
 );

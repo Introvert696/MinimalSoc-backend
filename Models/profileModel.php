@@ -242,4 +242,16 @@ class ProfileModel
             exit();
         }
     }
+    function getGroupInfo($groupId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Select * from group_soc where id = '$groupId'");
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }
