@@ -375,6 +375,8 @@ class mainController
             $user = $this->checkToken($_POST['token']);
             if ($user) {
                 $groupInfo = $profileM->getGroupInfo($_POST['groupId']);
+                $groupPosts = $profileM->getGroupPost($_POST['groupId']);
+                array_push($groupInfo, $groupPosts);
                 if ($groupInfo != null) {
                     print_r(json_encode($groupInfo));
                 } else {

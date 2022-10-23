@@ -254,4 +254,16 @@ class ProfileModel
             exit();
         }
     }
+    function getGroupPost($groupId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("Select * from group_post where creater = '$groupId'");
+            $sth->execute();
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }
