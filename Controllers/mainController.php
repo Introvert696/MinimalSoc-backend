@@ -2,6 +2,7 @@
 
 class mainController
 {
+    //Корс которые делает мозг
     function cors()
     {
 
@@ -27,16 +28,19 @@ class mainController
             exit(0);
         }
     }
+
     function __construct()
     {
         $this->cors();
         header('Content-Type: application/json; charset=utf-8');
         require_once "Models/profileModel.php";
+        $profileM = new ProfileModel();
     }
+    //проверка токена
     function checkToken($token)
     {
         $profileM = new ProfileModel();
-        $result = $profileM->getAllUsers();
+        $result = $this->profileM->getAllUsers();
         foreach ($result as $user) {
             if ($user['token'] == $token) {
                 return $user;
@@ -44,6 +48,7 @@ class mainController
         }
         return false;
     }
+    // Проверка логина и пароля для авторизации
     function checkLogPas($login, $password)
     {
         $password = md5(md5($password));
@@ -59,12 +64,8 @@ class mainController
         return false;
     }
 
-    function indexAction()
-    {
-    }
     function usersAction()
     {
-
         $profileM = new ProfileModel();
         $result = $profileM->getSafeUsers();
         print_r(json_encode($result));
@@ -72,7 +73,6 @@ class mainController
     }
     function authorizeAction()
     {
-
         if (isset($_POST['login']) && isset($_POST['password'])) {
             $resultAuth = $this->checkLogPas($_POST['login'], $_POST['password']);
             if ($resultAuth) {
@@ -111,9 +111,10 @@ class mainController
             exit();
         }
     }
+    //вывод постов пользователя
     function feedpostAction()
     {
-
+        // Корса, которая опять делает мозг -_-
         $this->cors();
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: *");
@@ -123,7 +124,6 @@ class mainController
         if (isset($_POST['token'])) {
             $profileM = new ProfileModel();
             $user = $this->checkToken($_POST['token']);
-
             if ($user) {
                 $current_friend = $this->getFriend($user['id']);
                 $myPosts = $profileM->getPosts($user['id']);
@@ -137,21 +137,20 @@ class mainController
                 foreach ($myPosts as $p) {
                     array_push($postarr, $p);
                 }
-
                 print_r(json_encode($postarr));
             }
         }
     }
-
+    // Получение информации о профиле
     function profileinfoAction()
     {
         if (isset($_POST['token'])) {
             $profileM = new ProfileModel();
             $profile = $profileM->getProfile($_POST['token']);
-
             print_r(json_encode($profile));
         }
     }
+    // Получение "своих" постов
     function mypostsAction()
     {
         if (isset($_POST['token'])) {
@@ -163,12 +162,12 @@ class mainController
                 } else {
                     $myPosts = $profileM->getMyposts($user['id']);
                 }
-
-
                 print_r(json_encode($myPosts));
+                exit();
             }
         }
     }
+    // Создание поста
     function createpostAction()
     {
         if (isset($_POST['token']) && isset($_POST['post_text'])) {
@@ -176,12 +175,12 @@ class mainController
             $user = $this->checkToken($_POST['token']);
             if ($user) {
                 $myPosts = $profileM->createPost($user['id'], $_POST['post_text']);
-
                 print_r(json_encode($myPosts));
                 exit();
             }
         }
     }
+    // Получение информации выбранного профиля
     function userprofileAction()
     {
         if (isset($_POST['token']) && isset($_POST['user_id'])) {
@@ -189,7 +188,6 @@ class mainController
             $user = $this->checkToken($_POST['token']);
             if ($user) {
                 $userprofile = $profileM->getUser($_POST['user_id']);
-
                 print_r(json_encode($userprofile));
                 exit();
             } else {
@@ -198,7 +196,7 @@ class mainController
             }
         }
     }
-    //получение друзей
+    // вспомогательная функция для получения друзей
     function getFriend($userId)
     {
         $profileM = new ProfileModel();
@@ -216,6 +214,7 @@ class mainController
         }
         return $current_friend;
     }
+    // Получение друзей
     function friendAction()
     {
         if (isset($_POST['token'])) {
@@ -228,6 +227,7 @@ class mainController
             exit();
         }
     }
+    // Получение сообщений выбранного диалога между пользователями
     function messagesAction()
     {
         if (isset($_POST['token'])) {
@@ -261,6 +261,7 @@ class mainController
             }
         }
     }
+    // Отправка сообщения 
     function sendmessageAction()
     {
         if (isset($_POST['token']) && isset($_POST['selected_mail_group']) && isset($_POST['content'])) {
@@ -287,6 +288,7 @@ class mainController
             }
         }
     }
+    // Создание нового диалога
     function createdialogAction()
     {
         if (isset($_POST['token']) && isset($_POST['user_id'])) {
@@ -323,6 +325,7 @@ class mainController
             }
         }
     }
+    // Функция поиска (пока только пользователей)
     function searchAction()
     {
         if (isset($_POST['token']) && isset($_POST['query_string'])) {
@@ -334,6 +337,7 @@ class mainController
             }
         }
     }
+    // Добавление в друзья
     function addfriendAction()
     {
         if (isset($_POST['token']) && isset($_POST['friend_id'])) {
@@ -357,6 +361,10 @@ class mainController
             }
         }
     }
+    // Получение сообществ на которые подписан юзер
+    // добавить аргумент, который если он равен нулль,
+    // то выводятся группы свои, а если указан, то 
+    // группы пользователя по id
     function getusergroupAction()
     {
         if (isset($_POST['token'])) {
@@ -368,6 +376,7 @@ class mainController
             }
         }
     }
+    // Получение информации о группе по id
     function getgroupAction()
     {
         if (isset($_POST['token']) && isset($_POST['groupId'])) {
@@ -387,6 +396,7 @@ class mainController
             }
         }
     }
+    // Удаление поста, который создал пользователь
     function deletepostAction()
     {
         if (isset($_POST['token']) && isset($_POST['postId'])) {
