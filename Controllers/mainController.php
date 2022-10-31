@@ -34,13 +34,14 @@ class mainController
         $this->cors();
         header('Content-Type: application/json; charset=utf-8');
         require_once "Models/profileModel.php";
-        $profileM = new ProfileModel();
     }
     //проверка токена
     function checkToken($token)
     {
+
+
         $profileM = new ProfileModel();
-        $result = $this->profileM->getAllUsers();
+        $result = $profileM->getAllUsers();
         foreach ($result as $user) {
             if ($user['token'] == $token) {
                 return $user;
