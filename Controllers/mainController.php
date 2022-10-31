@@ -387,4 +387,21 @@ class mainController
             }
         }
     }
+    function deletepostAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['postId'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                try {
+                    $deleteResult = $profileM->deletePost($_POST['postId'], $user['id']);
+                    print_r(json_encode($deleteResult));
+                } catch (\Throwable $th) {
+                    http_response_code(404);
+                    print_r(json_encode("Error"));
+                    exit();
+                }
+            }
+        }
+    }
 }

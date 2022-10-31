@@ -266,4 +266,16 @@ class ProfileModel
             exit();
         }
     }
+    function deletePost($postId, $userId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("delete from posts where (post_id = '$postId') AND (post_creater = '$userId')");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }
