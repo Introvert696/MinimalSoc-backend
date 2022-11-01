@@ -278,4 +278,16 @@ class ProfileModel
             exit();
         }
     }
+    function deleteMesGroup($mesGroupId, $userId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("DELETE FROM `message_group` WHERE (`message_group`.`mgr_id` = '$mesGroupId') AND ((first_user='$userId')OR(twelf_user='$userId'))");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }

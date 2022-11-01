@@ -17,5 +17,6 @@ return array(
     "creategroup" => "main/creategroup",
     "getusergroup" => "main/getusergroup",
     "getgroup" => "main/getgroup",
-    "deletepost" => "main/deletepost"
+    "deletepost" => "main/deletepost",
+    "deletemessagegroup" => "main/deletemessagegroup",
 );

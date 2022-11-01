@@ -415,4 +415,25 @@ class mainController
             }
         }
     }
+    // Удаление Диалога
+    function deletemessagegroupAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['mesGroupId'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                //вызов модели на удаление группы
+                try {
+                    $resultdelte = $profileM->deleteMesGroup($_POST['mesGroupId'], $user['id']);
+                    print_r(json_encode("Delete Succefuly"));
+                    http_response_code(202);
+                    exit();
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    http_response_code(502);
+                    exit();
+                }
+            }
+        }
+    }
 }
