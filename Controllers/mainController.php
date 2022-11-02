@@ -70,7 +70,6 @@ class mainController
         $profileM = new ProfileModel();
         $result = $profileM->getSafeUsers();
         print_r(json_encode($result));
-        exit();
     }
     function authorizeAction()
     {
@@ -78,11 +77,10 @@ class mainController
             $resultAuth = $this->checkLogPas($_POST['login'], $_POST['password']);
             if ($resultAuth) {
                 print_r(json_encode($resultAuth));
-                exit();
             }
         } else {
             print_r(json_encode("NOT FOUND"));
-            exit();
+
             //
         }
     }
@@ -101,15 +99,12 @@ class mainController
                 $regResult = $profileM->register($login, $password, $name, $lastname, $date, $token, $sool);
                 print_r(json_encode($regResult));
                 http_response_code(202);
-                exit();
             } catch (\Throwable $th) {
                 print_r($th);
-                exit();
             }
         } else {
             http_response_code(501);
             print_r("Bad request");
-            exit();
         }
     }
     //вывод постов пользователя
@@ -164,7 +159,6 @@ class mainController
                     $myPosts = $profileM->getMyposts($user['id']);
                 }
                 print_r(json_encode($myPosts));
-                exit();
             }
         }
     }
@@ -177,7 +171,6 @@ class mainController
             if ($user) {
                 $myPosts = $profileM->createPost($user['id'], $_POST['post_text']);
                 print_r(json_encode($myPosts));
-                exit();
             }
         }
     }
@@ -190,10 +183,9 @@ class mainController
             if ($user) {
                 $userprofile = $profileM->getUser($_POST['user_id']);
                 print_r(json_encode($userprofile));
-                exit();
             } else {
-                http_response_code(403);
-                exit();
+                //http_response_code(403);
+
             }
         }
     }
@@ -225,7 +217,6 @@ class mainController
             print_r(json_encode($current_friend));
         } else {
             http_response_code(403);
-            exit();
         }
     }
     // Получение сообщений выбранного диалога между пользователями
@@ -245,7 +236,6 @@ class mainController
                     }
                     if (empty($current_message)) {
                         http_response_code(404);
-                        exit();
                     }
                     print_r(json_encode($current_message));
                 }
@@ -257,7 +247,6 @@ class mainController
                     print_r(json_encode($mesGroup));
                 } else {
                     http_response_code(403);
-                    exit();
                 }
             }
         }
@@ -281,8 +270,6 @@ class mainController
                     $message = $profileM->createMessage($user['id'], $to_user, $message_group["mgr_id"], $_POST['content']);
                     print_r(json_encode($message));
                     http_response_code(202);
-
-                    exit();
                 } else {
                     http_response_code(501);
                 }
@@ -392,7 +379,6 @@ class mainController
                 } else {
                     http_response_code(404);
                     print_r(json_encode(404));
-                    exit();
                 }
             }
         }
@@ -410,7 +396,6 @@ class mainController
                 } catch (\Throwable $th) {
                     http_response_code(404);
                     print_r(json_encode("Error"));
-                    exit();
                 }
             }
         }
@@ -427,13 +412,15 @@ class mainController
                     $resultdelte = $profileM->deleteMesGroup($_POST['mesGroupId'], $user['id']);
                     print_r(json_encode("Delete Succefuly"));
                     http_response_code(202);
-                    exit();
                 } catch (\Throwable $th) {
                     //throw $th;
                     http_response_code(502);
-                    exit();
                 }
             }
         }
+    }
+    // Удаление сообщений
+    function deleteMessageAction()
+    {
     }
 }
