@@ -290,4 +290,16 @@ class ProfileModel
             exit();
         }
     }
+    function deleteFriend($user_id, $friend_id)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("DELETE FROM `friend` WHERE (`friend_id` = '$friend_id' AND ((twelf_user='$user_id')OR(first_user='$user_id')))");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }

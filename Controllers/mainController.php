@@ -123,9 +123,13 @@ class mainController
             if ($user) {
                 $current_friend = $this->getFriend($user['id']);
                 $myPosts = $profileM->getPosts($user['id']);
+
                 $postarr = [];
+
                 foreach ($current_friend as $f) {
-                    $temp_post = $profileM->getPosts($f[0]['id']);
+
+                    $temp_post = $profileM->getPosts($f['id']);
+
                     foreach ($temp_post as $p) {
                         array_push($postarr, $p);
                     }
@@ -133,6 +137,7 @@ class mainController
                 foreach ($myPosts as $p) {
                     array_push($postarr, $p);
                 }
+
                 print_r(json_encode($postarr));
             }
         }
@@ -420,7 +425,16 @@ class mainController
         }
     }
     // Удаление сообщений
-    function deleteMessageAction()
+    function deletefriendAction()
     {
+
+        if (isset($_POST['token']) && isset($_POST['friend_id'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $result = $profileM->deleteFriend($user['id'], $_POST['friend_id']);
+                print_r(json_encode($result));
+            }
+        }
     }
 }
