@@ -437,4 +437,16 @@ class mainController
             }
         }
     }
+    function deletemessageAction()
+    {
+
+        if (isset($_POST['token']) && isset($_POST['messageId'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $result = $profileM->deleteMessage($user['id'], $_POST['messageId']);
+                print_r(json_encode($result));
+            }
+        }
+    }
 }

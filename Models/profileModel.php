@@ -302,4 +302,16 @@ class ProfileModel
             exit();
         }
     }
+    function deleteMessage($userId, $messageId)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("DELETE FROM message WHERE message_id = '$messageId' AND ((user_from = '$userId')OR(user_to = '$userId'))");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }
