@@ -449,4 +449,15 @@ class mainController
             }
         }
     }
+    function creategroupAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['title']) && isset($_POST['desk'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $result = $profileM->createGroup($user['id'], $_POST['title'], $_POST['desk']);
+                print_r(json_encode($result));
+            }
+        }
+    }
 }

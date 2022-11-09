@@ -314,4 +314,18 @@ class ProfileModel
             exit();
         }
     }
+    function createGroup($userId, $title, $desk)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("INSERT INTO `group_soc`(`title`, `desk`,`group_creater`) VALUES ('$title','$desk','$userId')");
+            $sth->execute();
+            $sth = $conn->prepare("Select * from group_soc where title='$title' and desk='$desk'");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }
