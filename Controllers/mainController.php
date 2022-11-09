@@ -377,9 +377,12 @@ class mainController
             $user = $this->checkToken($_POST['token']);
             if ($user) {
                 $groupInfo = $profileM->getGroupInfo($_POST['groupId']);
+
+                array_push($groupInfo["0"], $user['id']);
                 $groupPosts = $profileM->getGroupPost($_POST['groupId']);
                 array_push($groupInfo, $groupPosts);
                 if ($groupInfo != null) {
+
                     print_r(json_encode($groupInfo));
                 } else {
                     http_response_code(404);
@@ -456,6 +459,17 @@ class mainController
             $user = $this->checkToken($_POST['token']);
             if ($user) {
                 $result = $profileM->createGroup($user['id'], $_POST['title'], $_POST['desk']);
+                print_r(json_encode($result));
+            }
+        }
+    }
+    function creategrouppostAction()
+    {
+        if (isset($_POST['token']) && isset($_POST['groupId']) && isset($_POST['content'])) {
+            $profileM = new ProfileModel();
+            $user = $this->checkToken($_POST['token']);
+            if ($user) {
+                $result = $profileM->createGroupPost($_POST['groupId'], $_POST['content']);
                 print_r(json_encode($result));
             }
         }

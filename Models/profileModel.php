@@ -328,4 +328,16 @@ class ProfileModel
             exit();
         }
     }
+    function createGroupPost($groupId, $content)
+    {
+        $dbcon = require 'Db/connDb.php';
+        if ($dbcon != null) {
+            $sth = $conn->prepare("INSERT INTO `group_post`(`post_text`, `creater`) VALUES ('$content','$groupId')");
+            $sth->execute();
+            $result = $sth->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            exit();
+        }
+    }
 }

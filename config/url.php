@@ -21,5 +21,6 @@ return array(
     "deletemessagegroup" => "main/deletemessagegroup",
     "deletefriend" => "main/deletefriend",
     "deletemessage" => "main/deletemessage",
-    "creategroup" => "main/creategroup"
+    "creategroup" => "main/creategroup",
+    "creategrouppost" => "main/creategrouppost"
 );
